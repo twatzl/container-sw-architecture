@@ -2,12 +2,13 @@
 
 ## Research Questions
 
-- What is the main advantage of containers over classical deployment (with and without vm) or are there disadvantages? How do they compare security wise?
-- What type of container architecture is mainly used at the moment?
-- Could there be an architecture for containerized applications which is more secure by default? I.e. how to design for security?
-- What is the preferable way to store the configuration (container command + usernames/passwords) when using containers (Infra as code? alternatives?)?
-	- This specifically refers to safety against loss of data
-	- and security against theft of credentials
+- How would a secure by default architecture for containerized software would look like?
+	- safely store configuration + credentials
+- How would this architecture then compare security wise e.g. to classical direct deployment or VM deployment?
+
+## Notes about paper structure
+
+What type of container architectures are used at the moment?
 
 ## Papers
 
