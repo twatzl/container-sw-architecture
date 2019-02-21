@@ -1,0 +1,242 @@
+\documentclass[conference]{IEEEtran}
+% \IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{url}
+
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\begin{document}
+
+\title{Security of Distributed Container Systems}
+
+\author{\IEEEauthorblockN{1\textsuperscript{st} Tobias Watzl}
+\IEEEauthorblockA{%\textit{dept. name of organization (of Aff.)} \\
+%\textit{name of organization (of Aff.)}\\
+Helsinki, Finland \\
+twatzl@gmx.at}}
+
+\maketitle
+
+\begin{abstract}
+\textit{coming soon ...}
+*CRITICAL: Do Not Use Symbols, Special Characters, Footnotes, 
+or Math in Paper Title or Abstract.
+\end{abstract}
+
+\begin{IEEEkeywords}
+component, formatting, style, styling, insert
+\end{IEEEkeywords}
+
+\section{Introduction}
+
+\textit{coming soon ...}
+
+\section{Background}
+
+\subsection{Virtual Machines and Containers}
+
+On modern servers there are often virtualization techniques used in order to increase the server utilization, i.e. to reduce the time a server is in idle and the hardware unused. Generally there are two concepts for adressing this issue. The first one is hypervisor based virtual machines and the second concept are containers.
+
+Hypervisor based virtual machines introduce a virtual hardware layer and guest systems run their own kernel. This results in a substantial isolation of host and guest operating system. However it also introduces some performance overhead, because of the virtualization layers.
+
+Containers on the other hand utilize techniques to share the kernel with the host operating system. This allows for more containers to run on the same machine than there could be with hypervisor based systems. The downside is, that this also reduces the isolation between host and guest system.
+
+Docker is currently the most used container solution.[citation needed]
+
+The isolation for docker is created by using so called Linux kernel namespaces (LXC). These allow TODO
+
+\subsection{Docker}
+
+Since docker is the most used container engine [citation neeeded], we will use docker terminology in this paper.
+
+The basis of each container is a so called image. The image contains information about what the state of the container should be when it is created. Each image can be based on other images and this creates a tree. There are also base images, which are then the root of this tree. Each node is known as a layer and each layer adds some change to the state, for example additional commands which are executed.
+
+Each container can have volumes, which are folders that can be mounted from the host machine. This is used to allow the configuration to be persistent.
+
+The docker paradigm is not to run any updates inside a container, instead if the image changes the whole container is thrown away and created from scratch.
+
+For networking needs docker provides it's own means to configure virtual networks. It then automatically changes iptables rules on the host machine to create those networks.
+
+\subsection{Container deployment}
+
+Deployment is defined as ``\textit{The action of bringing resources into effective action.}''\cite{deploymentdict}. In this sense software deployment refers to the process of packaged software and make it run on a computer system.
+Due to the current nature of the topic the terms are not always clearly defined, but container deployment refers at least to act of creating a container from an image and run it on a host machine.
+
+Since each container only runs a single service, it might be necessary to run multiple services which then form a full application. For example one or more containers might run the API, one container might contain the database and another one might contain a load balancer. There could be additional containers for logging purposes etc.
+
+Today many services are globally available and have millions of users. For these services a single server is not sufficient. Often orchestration tools like Kubernetes, OpenShift or proprietary solutions are used to manage the deployment of containers across multiple machines in one or more datacenters[citation needed].
+
+They way these containers are distributed and related to each other is referred to as a container deployment pattern.
+
+\subsection{Microservice Architecture}
+
+The microservice architecture is a new software architecture which aims to break up big applications into multiple services, where each service has only a single responsibility. This might be for example user management, billing, logging or serving of content.
+
+This architecture allows each component to be individually developed and ensures a good separation between the modules. The modules then usually communicate via the network with each other.
+
+This architecture is tightly connected to the advent of containers, beacause TODO: research
+
+\subsection{Research Questions}
+
+Containers have been around for quite a while now [citation needed] and have become quite popular for software deployment [citation needed]. As containers becomes more and more popular [citation needed], more people will have to work with them, however it seems that there are no real resources on best practices how to set up applications which consist of multiple containers in a way that provides optimal security. It is somehow unrealistic to expect perfect knowledge of the technology by new users and that made us wonder, if there are any best practices on how to setup containers in order to maximize the security of the deployed services. Deploying a containerized application is more than just pulling an image and starting a container. It requires configuration of volumes, networks and more. This is the reason why we came up with our research questions.
+
+Nowadays applications are usually developed using a microservices architecture, but containers have also proven to be useful in deploying classic server applications like nginx or apache servers.
+Most of the time applications will be composed from multiple containers, where each container runs one specific service. For example there might be one or more containers for the database, a container for the webpage, one for the api and another one for load balancing purposes. These containers all have to be configured with regard to each other, so they can work together in order to provide the full application.
+
+In our research we will not examine single container applications, but rather multi container deployments
+
+In essence the questions we want to answer in this paper are as follows:
+
+\paragraph{Old and busted:}
+
+\begin{itemize}
+\item How would a secure by default architecture for containerized software would look like?
+	\subitem safely store configuration + credentials
+\item How would this architecture then compare security wise e.g. to classical direct deployment or VM deployment?
+\end{itemize}
+
+\paragraph{new hotness:}
+
+\begin{itemize}
+\item What are the main steps that can/should be undertaken to make a single node application more secure?
+	\subitem How are credentials stored and handled in practice?
+\item (Are there any additional security concerns with distributed layouts?)
+\end{itemize}
+
+\section{Method}
+
+This research is a literature review and aims to assess the existing work in the fields of software architecture, software deployment and security about containers in a common context.
+
+For our initial starting points we decided to use Google Scholar to find papers about the topics of architecture and security for container based applications. we used a lot of different search terms to ensure having a broad basis from where the research can start with the most interesting results.
+
+We chose the papers to include in a multi step process, where each step could lead to exclusion of a paper and we only consider papers which passed all steps.
+First we conducted a search using a given search string. Based on the paper title we then selected papers which seemed to be related to our research questions. Then we analyzed the abstract. If it indicated that the paper is not directly related to our research questions, we excluded the paper. If the abstract was inconclusive, we analyzed the conclusions and introduction of the paper.
+We were very generous in including papers based on title, because it seemed there was little research available on the exact topics we are interested in. Also we did not restrict the types of publications we consider in our work, for the same reasons.
+
+The following lists the used search terms and results, for all of the searches the results were limited to papers since 2015 and the search was conducted using \url{scholar.google.at}.
+
+At first we were looking for papers related to conainers in general and the current state of the art in container deployment architecture:
+\begin{itemize}
+\item container systems
+\begin{itemize}
+	\item 128k results
+	\item This search term was abandoned, because it was very ambiguous and many results were about shipping containers, patents etc.
+	\item The search term was too general.
+\end{itemize}
+\item container software systems
+\begin{itemize}
+	\item 28k results
+	\item Many of the results were very specific to a certain problem, but we are looking for a generic solution.
+	\item \textit{Design Patterns for Container-based Distributed Systems} \cite{Burns2016}. was selected, because it generally describes how distributed systems can be built with containers.  [TODO: not reproducible at the moment]
+\end{itemize}
+\item container architecture
+\begin{itemize}
+	\item 30k results
+	\item again much of the resulting work was focusing on a very specific subset of architecture
+	\item based on citation count and search listing we decided to take a closer look at \textit{A Container-Based Edge Cloud PaaS Architecture Based on Raspberry Pi Clusters} \cite{Pahl2016} and \textit{Microservices Architecture Enables DevOps: Migration to a Cloud-Native Architecture} \cite{Balalaie2016}, the first one turned out to be not related to our research
+\end{itemize}
+\item azure architecture
+\begin{itemize}
+	\item 16k results
+	\item The most promising result seemed to be \cite{Mazumdar2016}, but since we do not have access, we cannot consider it for our research. Since we could not tell from the abstract if this work is really relevant for the research we opted to not consider it, given the many other sources we have found.
+	\item the other results seemed not to be too closely related from the title and description found in Google Scholar
+\end{itemize}
+\item google cloud architecture
+\begin{itemize}
+	\item 62k results 
+	\item selected based on title and description:
+	    \textit{MetaCloudDataStorage architecture for big data security in cloud computing} \cite{manogaran2016metaclouddatastorage}, contains research about data security, but has nothing to do with containers
+		\textit{The Role of Cloud Computing Architecture in Big Data} \cite{Bahrami2015}, this work is also not acessible due to monetary restrictions
+		\textit{Lambda architecture for cost-effective batch and speed big data processing} \cite{Kiran2015}, is about architecture, but not about containers
+\end{itemize}
+\item application container architecture
+\begin{itemize}
+	\item 37k results
+	\item selection based on title
+		\textit{Microservices Architecture Enables DevOps: Migration to a Cloud-Native Architecture} \cite{Balalaie2016}, already appeared in previous search
+		\textit{The Design and Architecture of Microservices} \cite{Sill2016}, todo description
+		\textit{Microservices-based software architecture and approaches} \cite{Bakshi2017}, todo description
+\end{itemize}
+\item container orchestration
+    \begin{itemize}
+        \item 10k results
+        \item none of the results seemed to be of interest for the research, based on their title
+    \end{itemize}
+\end{itemize}
+
+Then we looked at the state of the art in container security research:
+\begin{itemize}
+\item container security
+\begin{itemize}
+    \item 40k results
+	\item again containing results about the security of shipping containers
+	\item based on the title and description text, the work which seemed to be most relevant was selected
+	\item \textit{Security Assurance Requirements for Linux Application Container Deployments} \cite{chandramouli2017security}, a NIST document describing steps which can be taken in order to secure container applications
+	\item \textit{To Docker or not to Docker: A security perspective} \cite{combe2016docker}
+	\item \textit{Comparison between security majors in virtual machine and linux containers} \cite{gupta2015comparison}
+	\item \textit{Analysis of docker security} \cite{bui2015analysis}
+	\item A talk about \textit{Container Security
+} \url{https://www.usenix.org/conference/lisa18/presentation/walsh}
+\end{itemize}
+\item microservices architecture
+\begin{itemize}
+	\item 6k results
+	\item \textit{Microservices Architecture Enables DevOps: Migration to a Cloud-Native Architecture} \cite{Balalaie2016}, already found in other search
+	\item \cite{Jaramillo2016}
+	\item \cite{Bakshi2017}, also found in other search term
+\end{itemize}
+\item microservices deployment architecture
+\begin{itemize}
+    \item 5k results
+	\item pretty much the same results as the previous search term
+\end{itemize}
+\item container deployment
+\begin{itemize}
+	\item 17k results
+	\item based on title and description, no relevant work was found
+\end{itemize}
+\item container deployment pattern
+\begin{itemize}
+	\item 17k results
+	\item \cite{Burns2016}
+	\item \cite{Syed2015}
+\end{itemize}
+\end{itemize}
+
+Since this research has yielded little results about container deployment patterns, further research has been done using a regular Google search, in order to also include Blog posts, documentation of software products and similar resources. 
+The following results were obtained.
+
+\begin{itemize}
+\item container design patterns
+\begin{itemize}
+	\item 296 mio. results
+	\item https://techbeacon.com/enterprise-it/7-container-design-patterns-you-need-know
+	\item https://research.google.com/pubs/archive/45406.pdf
+	\item https://kubernetes.io/blog/2016/06/container-design-patterns/
+	\item https://medium.com/tech-bits/container-design-patterns-7020b132675
+	\item most of the results did add little new to the work done by google research and some of them seemed to be nothing more than a reformatting of said work
+\end{itemize}
+\item container deployment patterns
+\begin{itemize}
+    \item 18.6 mio. results
+	\item https://dzone.com/articles/8-docker-deployment-patterns, which is only a link to https://hokstad.com/docker/patterns
+	\item other than that the results were similar to the other search term used
+\end{itemize}
+\end{itemize}
+
+Based on this initial research it was decided to focus on [insert papers here], because [insert reason here]
+
+Furthermore the following work from the citations seemed to be relevant [mention work here]
+
+\section{rest goes here}
+
+\bibliographystyle{plain}
+\bibliography{bibliography}{}
+
+\end{document}
